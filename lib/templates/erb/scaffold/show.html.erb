@@ -1,0 +1,25 @@
+<!--datatables-->
+<div class="row">
+    <div class="col-lg-12">
+        <%%if notice %>
+        <p id="notice" class="alert alert-info" style="margin: 10px 0 0 0;"><%%= notice %></p>
+        <%%end%>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <!--这张表(plural_table_name)的复数名称的标题化(内部单词首字母大写)-->
+                <%= plural_table_name.titleize %>详情
+            </div>
+            <div class="panel-body">
+                <% attributes.reject(&:password_digest?).each do |attribute| -%>
+                    <p>
+                        <strong><%= attribute.human_name %>:</strong>
+                        <%%= @<%= singular_table_name %>.<%= attribute.name %> %>
+                    </p>
+
+                <% end -%>
+            </div>
+        </div>
+    </div>
+</div>
+<%%= link_to '编辑', edit_<%= singular_table_name %>_path(@<%= singular_table_name %>),class:"btn btn-sm btn-default" %> |
+<%%= link_to '返回列表', <%= index_helper %>_path,class:"btn btn-sm btn-default" %>

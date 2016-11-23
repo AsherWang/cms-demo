@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="col-lg-12">
+        <%%if notice %>
+        <p id="notice" class="alert alert-info" style="margin: 10px 0 0 0;"><%%= notice %></p>
+        <%%end%>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                创建<%= singular_table_name.titleize %>
+            </div>
+            <div class="panel-body">
+                <%%= render 'form' %>
+                <%%= link_to '返回列表', <%= index_helper %>_path,class:"btn btn-warning btn-sm" %>
+            </div>
+        </div>
+    </div>
+</div>
+
