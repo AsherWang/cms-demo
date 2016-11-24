@@ -56,8 +56,12 @@ class UsersController < ApplicationController
     # DELETE /users/1
     # DELETE
     def destroy
-        User.destroy_all(:id=>params[:ids])
-       
+        # if params[:ids].include? current_user.id
+        #     render :json=>nil,:status=>401
+        # else
+        #     User.destroy_all(:id=>params[:ids])
+        #     render :json=>nil,:status=>204
+        # end
         render :json=>nil,:status=>204
     end
 

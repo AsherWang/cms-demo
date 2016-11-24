@@ -9,7 +9,7 @@
                 },
                 method:"POST"
             }).always(function(data,content,response){
-                cb(response.status==204);
+                cb(response.status==204,response.status);
             });
         }
     };
@@ -45,13 +45,16 @@
         
         $("#mutipleDeleteBtn").click(function(){
             //show alert
-            methods.destroy(urls.delete,csrfToken,gatherSelectedItemId(),function(success){
+            methods.destroy(urls.delete,csrfToken,gatherSelectedItemId(),function(success,status){
                 if(success){
                     //todo:删除成功,如果与此同时没有另一个人新加一个记录的话,这里可以直接从dom中remove掉而不需要刷新
                     //嘛暂时先刷新页面
                     location.reload();
                 }else{
                     //删除失败
+                    if(status==401){
+                        alert("无权操作");
+                    }
                 }
             });
         });
