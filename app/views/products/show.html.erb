@@ -1,31 +1,16 @@
-<!--datatables-->
-<div class="row">
-    <div class="col-lg-12">
-        <%if notice %>
-        <p id="notice" class="alert alert-info" style="margin: 10px 0 0 0;"><%= notice %></p>
-        <%end%>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <!--这张表(plural_table_name)的复数名称的标题化(内部单词首字母大写)-->
-                Products详情
-            </div>
-            <div class="panel-body">
-                <table class="table table-bordered">
-                    <tbody>
-                                            <tr>
-                            <td style="width:10px;">Title</td>
-                            <td><%= @product.title %></td>
-                        </tr>
-                                            <tr>
-                            <td style="width:10px;">Content</td>
-                            <td><%= @product.content %></td>
-                        </tr>
-                                        </tbody>
-                </table>
-
-                <%= link_to '编辑', edit_product_path(@product),class:"btn btn-sm btn-default" %> |
-                <%= link_to '返回列表', products_path,class:"btn btn-sm btn-default" %>
-            </div>
-        </div>
-    </div>
-</div>
+<%==panel_helper "Product详情" do%>
+    <table class="table table-bordered">
+        <tbody>
+                    <tr>
+                <td style="width:10px;">Title</td>
+                <td><%= @product.title %></td>
+            </tr>
+                    <tr>
+                <td style="width:10px;">Content</td>
+                <td><%= @product.content %></td>
+            </tr>
+                </tbody>
+    </table>
+    <%= link_to '编辑', edit_product_path(@product),class:"btn btn-sm btn-default" %> |
+    <%= link_to '返回列表', products_path,class:"btn btn-sm btn-default" %>
+<%end%>

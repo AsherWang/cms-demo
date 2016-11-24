@@ -29,14 +29,11 @@
 <!--datatables-->
 <div class="row">
     <div class="col-lg-12">
-        <%if notice %>
-            <p id="notice" class="alert alert-info" style="margin-bottom: 10px;" ><%= notice %></p>
-        <%end%>
         <button id="mutipleDeleteBtn" class="btn btn-danger btn-group-sm">删除已标记项目</button>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <!--这张表(plural_table_name)的复数名称的标题化(内部单词首字母大写)-->
-                Products列表
+                Product列表
                 <%= link_to '新建 Product', new_product_path,style:"float:right;color:white;margin-top: -2px;line-height:1;",class:'btn btn-sm btn-success' %>
             </div>
             <div class="panel-body">

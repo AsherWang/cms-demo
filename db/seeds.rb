@@ -1,22 +1,3 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
-
-# if Story.first.nil?
-#     200.times do |i|
-#         u = Story.new
-#         u.title = "title"+i.to_s
-#         u.author = "Pollack"+i.to_s
-#         u.text="2333333"
-#         u.save
-#     end
-# end
-
-
 if Product.first.nil?
     200.times do |i|
         u = Product.new
@@ -26,3 +7,6 @@ if Product.first.nil?
     end
 end
 
+if User.first.nil?
+    User.create!(:username=>"testuser",:email=>"aoxin.wang@funplus.com",:password=>"233333")
+end

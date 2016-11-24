@@ -528,11 +528,11 @@ table.dataTable thead .sorting:after {
     }
 }
 
-a:focus {
+a:focus,button:focus {
     outline: none;  //reset
 }
 
-.panel
+.panel,.dropdown-menu,.alert,.form-control
 {
-    border-radius:0; //嗯不要圆角panel
+    border-radius:0; //嗯不要圆角
 }
