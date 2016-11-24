@@ -17,15 +17,6 @@
 # end
 
 
-if Demo.first.nil?
-    200.times do |i|
-        u = Demo.new
-        u.title = "title"+i.to_s
-        u.name = "Pollack"+i.to_s
-        u.save
-    end
-end
-
 if Product.first.nil?
     200.times do |i|
         u = Product.new

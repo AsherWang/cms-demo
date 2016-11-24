@@ -10,16 +10,20 @@
                 <%= plural_table_name.titleize %>详情
             </div>
             <div class="panel-body">
-                <% attributes.reject(&:password_digest?).each do |attribute| -%>
-                    <p>
-                        <strong><%= attribute.human_name %>:</strong>
-                        <%%= @<%= singular_table_name %>.<%= attribute.name %> %>
-                    </p>
+                <table class="table table-bordered">
+                    <tbody>
+                    <% attributes.reject(&:password_digest?).each do |attribute| -%>
+                        <tr>
+                            <td style="width:10px;"><%= attribute.human_name %></td>
+                            <td><%%= @<%= singular_table_name %>.<%= attribute.name %> %></td>
+                        </tr>
+                    <% end -%>
+                    </tbody>
+                </table>
 
-                <% end -%>
+                <%%= link_to '编辑', edit_<%= singular_table_name %>_path(@<%= singular_table_name %>),class:"btn btn-sm btn-default" %> |
+                <%%= link_to '返回列表', <%= index_helper %>_path,class:"btn btn-sm btn-default" %>
             </div>
         </div>
     </div>
 </div>
-<%%= link_to '编辑', edit_<%= singular_table_name %>_path(@<%= singular_table_name %>),class:"btn btn-sm btn-default" %> |
-<%%= link_to '返回列表', <%= index_helper %>_path,class:"btn btn-sm btn-default" %>

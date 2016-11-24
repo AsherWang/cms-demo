@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-    before_action :set_product, only: [:show, :edit, :update, :destroy]
+    before_action :set_product, only: [:show, :edit, :update]
     before_action :set_products, only: [:index_ajax]
     # GET /products
     def index
@@ -14,7 +14,6 @@ class ProductsController < ApplicationController
 
     # GET Index /products
     def index_ajax
-
         render json: {
             total: Product.all.all.size,
             data: @products.map{|item|item.attributes}  #todo:需要进行数据的过滤和格式化
@@ -55,9 +54,11 @@ class ProductsController < ApplicationController
     end
 
     # DELETE /products/1
+    # DELETE
     def destroy
-        @product.destroy
-        redirect_to products_url, notice: 'Product was successfully destroyed.'
+        Product.destroy_all(:id=>params[:ids])
+       
+        render :json=>nil,:status=>204
     end
 
     private
@@ -67,11 +68,9 @@ class ProductsController < ApplicationController
     end
 
     #set items for query
+    #
     def set_products
-        @products = Product.all
-        offset= !params[:offset].nil? ? params[:offset] : 0
-        limit= !params[:limit].nil? ? params[:limit] : 200
-        @products=Product.all.offset(offset).limit(limit)
+        @products=Product.all.offset(params[:offset]).limit(params[:limit])
     end
 
     # Only allow a trusted parameter "white list" through.

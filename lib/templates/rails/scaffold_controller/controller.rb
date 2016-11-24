@@ -4,7 +4,7 @@ require_dependency "<%= namespaced_path %>/application_controller"
 <% end -%>
 <% module_namespacing do -%>
 class <%= controller_class_name %>Controller < ApplicationController
-    before_action :set_<%= singular_table_name %>, only: [:show, :edit, :update, :destroy]
+    before_action :set_<%= singular_table_name %>, only: [:show, :edit, :update]
     before_action :set_<%= plural_table_name %>, only: [:index_ajax]
     # GET <%= route_url %>
     def index
@@ -19,7 +19,6 @@ class <%= controller_class_name %>Controller < ApplicationController
 
     # GET Index <%= route_url %>
     def index_ajax
-
         render json: {
             total: <%= orm_class.all(class_name) %>.all.size,
             data: @<%= plural_table_name %>.map{|item|item.attributes}  #todo:需要进行数据的过滤和格式化
@@ -60,9 +59,11 @@ class <%= controller_class_name %>Controller < ApplicationController
     end
 
     # DELETE <%= route_url %>/1
+    # DELETE
     def destroy
-        @<%= orm_instance.destroy %>
-        redirect_to <%= index_helper %>_url, notice: <%= "'#{human_name} was successfully destroyed.'" %>
+        <%= singular_table_name.titleize %>.destroy_all(:id=>params[:ids])
+       
+        render :json=>nil,:status=>204
     end
 
     private
@@ -72,11 +73,9 @@ class <%= controller_class_name %>Controller < ApplicationController
     end
 
     #set items for query
+    #
     def set_<%=plural_table_name %>
-        @<%= plural_table_name %> = <%= orm_class.all(class_name) %>
-        offset= !params[:offset].nil? ? params[:offset] : 0
-        limit= !params[:limit].nil? ? params[:limit] : 200
-        @<%= plural_table_name %>=<%= orm_class.all(class_name) %>.offset(offset).limit(limit)
+        @<%= plural_table_name %>=<%= orm_class.all(class_name) %>.offset(params[:offset]).limit(params[:limit])
     end
 
     # Only allow a trusted parameter "white list" through.

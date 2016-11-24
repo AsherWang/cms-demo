@@ -10,19 +10,22 @@
                 Products详情
             </div>
             <div class="panel-body">
-                                    <p>
-                        <strong>Title:</strong>
-                        <%= @product.title %>
-                    </p>
+                <table class="table table-bordered">
+                    <tbody>
+                                            <tr>
+                            <td style="width:10px;">Title</td>
+                            <td><%= @product.title %></td>
+                        </tr>
+                                            <tr>
+                            <td style="width:10px;">Content</td>
+                            <td><%= @product.content %></td>
+                        </tr>
+                                        </tbody>
+                </table>
 
-                                    <p>
-                        <strong>Content:</strong>
-                        <%= @product.content %>
-                    </p>
-
-                            </div>
+                <%= link_to '编辑', edit_product_path(@product),class:"btn btn-sm btn-default" %> |
+                <%= link_to '返回列表', products_path,class:"btn btn-sm btn-default" %>
+            </div>
         </div>
     </div>
 </div>
-<%= link_to '编辑', edit_product_path(@product),class:"btn btn-sm btn-default" %> |
-<%= link_to '返回列表', products_path,class:"btn btn-sm btn-default" %>

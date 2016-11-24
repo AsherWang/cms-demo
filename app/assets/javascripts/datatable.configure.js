@@ -5,7 +5,7 @@ $.dataTableDefaultConfiguration = {
         "emptyTable": "暂时没有数据",
         "info": "当前显示第_START_到_END_项,共_TOTAL_项",
         "infoEmpty": "暂时没有数据",
-        "infoFiltered": "(filtered from _MAX_ total entries)",
+        "infoFiltered": "(对_MAX_条数据的搜索结果)",
         "infoPostFix": "",
         "thousands": ",",
         "lengthMenu": "每页显示 _MENU_ 项",
