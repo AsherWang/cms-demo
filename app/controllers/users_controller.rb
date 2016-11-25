@@ -3,15 +3,9 @@ class UsersController < ApplicationController
     before_action :set_users, only: [:index_ajax]
     # GET /users
     def index
-        @users = User.all
+        
     end
-
-    # GET /users/index/ajax
-    def index_ajax
-        @users = User.all
-    end
-
-
+    
     # GET Index /users
     def index_ajax
         render json: {

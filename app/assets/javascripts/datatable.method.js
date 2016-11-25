@@ -1,4 +1,7 @@
 (function($){
+    
+    //一个保存了全局dataTable的Table
+    $.dataTablesTables={};
     methods={
         destroy:function(url,csrfToken,ids,cb){
             $.ajax(url,{
@@ -9,7 +12,7 @@
                 },
                 method:"POST"
             }).always(function(data,content,response){
-                cb(response.status==204,response.status);
+                cb(ids,response.status==204,response.status);
             });
         }
     };
@@ -21,12 +24,14 @@
                 "url":urls.query,
                 "type": "GET",
                 "dataSrc": "data"
-            }
+            },
+            "processing": true,
+            "serverSide": true
         },dataTablesOptions);  //databales的配置文件
         var table=$(selector);
         
         //初始化
-        table.DataTable(data);
+        var dataTableObject=table.DataTable(data);
         
         //绑定事件
         table.find("#dataTableSelectAll").click(function(){
@@ -42,25 +47,44 @@
             return ret;
         };
         
+        //删除某条数据之后的回调
+        var deleteCb=function(ids,success,status){
+            if(success){
+                //todo:删除成功,如果与此同时没有另一个人新加一个记录的话,这里可以直接从dom中remove掉而不需要刷新
+                //嘛暂时先刷新页面
+                location.reload();
+
+            }else{
+                //删除失败
+                if(status==401){
+                    alert("无权操作");
+                }
+            }
+        };
+        
         
         $("#mutipleDeleteBtn").click(function(){
             //show alert
-            methods.destroy(urls.delete,csrfToken,gatherSelectedItemId(),function(success,status){
-                if(success){
-                    //todo:删除成功,如果与此同时没有另一个人新加一个记录的话,这里可以直接从dom中remove掉而不需要刷新
-                    //嘛暂时先刷新页面
-                    location.reload();
-                }else{
-                    //删除失败
-                    if(status==401){
-                        alert("无权操作");
-                    }
-                }
+            var ids=gatherSelectedItemId();
+            if(ids.length<1){
+                return false;
+            }
+            $.showConfirmDialog("确认","确认删除"+(ids.length>1 ? "这"+ids.length+"项" : "")+"?",function(){
+                methods.destroy(urls.delete,csrfToken,gatherSelectedItemId(),deleteCb);
+            },function(){
+                console.log("cancel");
             });
+            
         });
         
-        return {
-                "info":"nothing"
+        var ret= {
+            "dataTableObject": dataTableObject,
+            "destroy": function (ids) {
+                methods.destroy(urls.delete, csrfToken, ids, deleteCb);
+            }
         };
+        $.dataTablesTables[selector]=ret;
+        return ret;
+        
     }
 }(jQuery));

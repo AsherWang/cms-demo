@@ -1,21 +1,19 @@
 class ProductsController < ApplicationController
     before_action :set_product, only: [:show, :edit, :update]
     before_action :set_products, only: [:index_ajax]
+    before_action :set_model_config, only:[:index,:index_ajax]
     # GET /products
     def index
-        @products = Product.all
+        
     end
 
-    # GET /products/index/ajax
-    def index_ajax
-        @products = Product.all
-    end
-
-
+    
     # GET Index /products
     def index_ajax
         render json: {
-            total: Product.all.all.size,
+            draw:params[:draw].to_i,
+            recordsTotal: Product.all.size,
+            recordsFiltered: @filteredProducts.size,
             data: @products.map{|item|item.attributes}  #todo:需要进行数据的过滤和格式化
         }
     end
@@ -70,11 +68,19 @@ class ProductsController < ApplicationController
     #set items for query
     #
     def set_products
-        @products=Product.all.offset(params[:offset]).limit(params[:limit])
+        @filteredProducts=Product.all
+        @products=@filteredProducts.offset(params[:start]).limit(params[:length])
     end
 
     # Only allow a trusted parameter "white list" through.
     def product_params
         params.require(:product).permit(:title, :content)
+    end
+    
+    def set_model_config
+        @model_config=Rails.configuration.model_config['product']
+        @columnsData=Product.attribute_names.select do |item|
+            !@model_config[item].nil? && @model_config[item]["visiable"]
+        end
     end
 end

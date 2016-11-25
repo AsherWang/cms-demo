@@ -1,0 +1,16 @@
+<%==panel_helper "Story详情" do%>
+    <table class="table table-bordered">
+        <tbody>
+                    <tr>
+                <td style="width:10px;">Title</td>
+                <td><%= @story.title %></td>
+            </tr>
+                    <tr>
+                <td style="width:10px;">Content</td>
+                <td><%= @story.content %></td>
+            </tr>
+                </tbody>
+    </table>
+    <%= link_to '编辑', edit_story_path(@story),class:"btn btn-sm btn-default" %> |
+    <%= link_to '返回列表', stories_path,class:"btn btn-sm btn-default" %>
+<%end%>

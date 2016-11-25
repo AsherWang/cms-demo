@@ -528,11 +528,18 @@ table.dataTable thead .sorting:after {
     }
 }
 
-a:focus,button:focus {
+a:focus,button:focus,.btn:focus,.btn {
     outline: none;  //reset
 }
 
-.panel,.dropdown-menu,.alert,.form-control
+.panel,.dropdown-menu,.alert,.form-control,.modal-content
 {
     border-radius:0; //嗯不要圆角
+}
+
+@media (min-width: 768px){
+    .modal-dialog {
+        width: 600px;
+        margin: 150px auto;  //modal 不要太靠上啦
+    }
 }

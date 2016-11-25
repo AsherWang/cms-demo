@@ -1,0 +1,13 @@
+production:
+    id:
+        visiable: false
+    title:
+        visiable: true
+development:
+    id:
+        visiable: false
+    title:
+        visiable: true
+        orderable: true
+    content:
+        visiable: true

@@ -4,25 +4,26 @@ require_dependency "<%= namespaced_path %>/application_controller"
 <% end -%>
 <% module_namespacing do -%>
 class <%= controller_class_name %>Controller < ApplicationController
+    before_action :set_model_config, only:[:index,:index_ajax]
     before_action :set_<%= singular_table_name %>, only: [:show, :edit, :update]
     before_action :set_<%= plural_table_name %>, only: [:index_ajax]
+    
     # GET <%= route_url %>
     def index
-        @<%= plural_table_name %> = <%= orm_class.all(class_name) %>
-    end
-
-    # GET <%= route_url %>/index/ajax
-    def index_ajax
         @<%= plural_table_name %> = <%= orm_class.all(class_name) %>
     end
 
 
     # GET Index <%= route_url %>
     def index_ajax
-        render json: {
-            total: <%= orm_class.all(class_name) %>.all.size,
+         render json: {
+            draw:params[:draw].to_i,
+            recordsTotal: <%= orm_class.all(class_name) %>.size,
+            recordsFiltered: @filtered<%= plural_table_name.titleize %>.size,
             data: @<%= plural_table_name %>.map{|item|item.attributes}  #todo:需要进行数据的过滤和格式化
         }
+
+
     end
 
     # GET <%= route_url %>/1
@@ -75,7 +76,15 @@ class <%= controller_class_name %>Controller < ApplicationController
     #set items for query
     #
     def set_<%=plural_table_name %>
-        @<%= plural_table_name %>=<%= orm_class.all(class_name) %>.offset(params[:offset]).limit(params[:limit])
+        
+        columns=params[:columns]
+        order=params[:order]["0"]
+        search_list=<%= singular_table_name.titleize %>.attribute_names.select do |item|
+            !@model_config[item].nil? && @model_config[item]["searchable"]
+        end
+        @filtered<%= plural_table_name.titleize %>=<%= orm_class.all(class_name) %>
+        @filtered<%= plural_table_name.titleize %>=@filtered<%= plural_table_name.titleize %>.order("#{columns[order["column"]]["data"]} #{order["dir"]}")  #单项排序
+        @<%= plural_table_name %>=@filtered<%= plural_table_name.titleize %>.offset(params[:start]).limit(params[:length])
     end
 
     # Only allow a trusted parameter "white list" through.
@@ -85,6 +94,13 @@ class <%= controller_class_name %>Controller < ApplicationController
     <%- else -%>
         params.require(:<%= singular_table_name %>).permit(<%= attributes_names.map { |name| ":#{name}" }.join(', ') %>)
     <%- end -%>
+    end
+
+    def set_model_config
+        @model_config=Rails.configuration.model_config['<%= singular_table_name %>']
+        @columnsData=<%= singular_table_name.titleize %>.attribute_names.select do |item|
+            !@model_config[item].nil? && @model_config[item]["visiable"]
+        end
     end
 end
 <% end -%>

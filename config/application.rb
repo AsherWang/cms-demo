@@ -26,8 +26,19 @@ module Myapp
             g.stylesheets false
             g.javascripts false
             g.jbuilder    false
+            g.helper :model_config
         end
 
+        config.model_config=Hash.new
+        Dir.entries(Rails.root.join('config', 'model_config').to_s).each do |filename|
+            unless File.directory?(filename)
+                name=filename[/(\w+).yml$/,1]
+                config.model_config[name]=config_for "model_config/#{name}"
+            end
+        end
+        # Dir[Rails.root.join('config', 'model_config', '*.yaml').to_s].each do |filename|
+        #     config.model_config[filename[/(\w+).yaml$/,1]]=config_for filename
+        # end
         config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
     end
 end

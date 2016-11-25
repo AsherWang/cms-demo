@@ -10,7 +10,7 @@ $.dataTableDefaultConfiguration = {
         "thousands": ",",
         "lengthMenu": "每页显示 _MENU_ 项",
         "loadingRecords": "载入数据...",
-        "processing": "Processing...",
+        "processing": "载入中...",
         "search": "搜索:",
         "zeroRecords": "没有符合要求的数据",
         "paginate": {
