@@ -21,6 +21,8 @@
 
 <!--初始化dataTables-->
 <script>
+
+    
     $(document).ready(function () {
         //todo:仿照rails的伪造方法来发起delete request,以及此处没有重写delete 的路由而随便传入了id,当然controller需要配合做出相应改动
         var urls={
@@ -33,13 +35,22 @@
                     return "<input type='checkbox' class='itemSelector' name='item' item-id='"+id+"' />";
                 }}
                 <%@columnsData.each do |item|%>
-                ,{"title": "<%=item%>", "data": "<%=item%>","orderable":<%=!@model_config[item].nil? && !@model_config[item]["orderable"].nil? && @model_config[item]["orderable"] %>}
+                ,{  "title": "<%=item%>"
+                    ,"data": "<%=item%>"
+                    
+                        ,"orderable":<%=!@model_config[item].nil? && !@model_config[item]["orderable"].nil? && @model_config[item]["orderable"]%>
+                    
+                        ,"searchable":<%=!@model_config[item].nil? && !@model_config[item]["searchable"].nil? && @model_config[item]["searchable"]%>
+                    
+                    ,"render":$.dataTablesFormatters('<%=!@model_config[item].nil? && @model_config[item]["formatter"]%>')
+                  }
                 <%end%>
                 ,{"title":"operations","orderable":false,"searchable":false,"data":"id",render:function(id){
                     linkHref='<%= products_path%>/'+id;
-                    look="<a class='btn btn-sm btn-default' href="+linkHref+" style='margin-right:7px;'>查看详情</a>";
+                    look="<a class='btn btn-sm btn-default' href='"+linkHref+"' style='margin-right:7px;'>详情</a>";
+                    edit="<a class='btn btn-sm btn-default' href='"+linkHref+"/edit' style='margin-right:7px;'>编辑</a>";
                     del="<a data-confirm='确定删除?' rel='nofollow' data-method='delete' href="+linkHref+" class='btn btn-danger btn-sm'>删除</a>";
-                    return look+del;
+                    return look+edit+del;
                 }}
             ]
         };

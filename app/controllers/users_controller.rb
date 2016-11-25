@@ -1,17 +1,24 @@
 class UsersController < ApplicationController
+    before_action :set_model_config, only:[:index,:index_ajax]
     before_action :set_user, only: [:show, :edit, :update]
     before_action :set_users, only: [:index_ajax]
+    
     # GET /users
     def index
-        
+        @users = User.all
     end
-    
+
+
     # GET Index /users
     def index_ajax
-        render json: {
-            total: User.all.all.size,
+         render json: {
+            draw:params[:draw].to_i,
+            recordsTotal: User.all.size,
+            recordsFiltered: @filteredUsers.size,
             data: @users.map{|item|item.attributes}  #todo:需要进行数据的过滤和格式化
         }
+
+
     end
 
     # GET /users/1
@@ -50,12 +57,8 @@ class UsersController < ApplicationController
     # DELETE /users/1
     # DELETE
     def destroy
-        # if params[:ids].include? current_user.id
-        #     render :json=>nil,:status=>401
-        # else
-        #     User.destroy_all(:id=>params[:ids])
-        #     render :json=>nil,:status=>204
-        # end
+        User.destroy_all(:id=>params[:ids])
+       
         render :json=>nil,:status=>204
     end
 
@@ -68,11 +71,26 @@ class UsersController < ApplicationController
     #set items for query
     #
     def set_users
-        @users=User.all.offset(params[:offset]).limit(params[:limit])
+        
+        columns=params[:columns]
+        order=params[:order]["0"]
+        search_list=User.attribute_names.select do |item|
+            !@model_config[item].nil? && @model_config[item]["searchable"]
+        end
+        @filteredUsers=User.all
+        @filteredUsers=@filteredUsers.order("#{columns[order["column"]]["data"]} #{order["dir"]}")  #单项排序
+        @users=@filteredUsers.offset(params[:start]).limit(params[:length])
     end
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-        params.require(:user).permit(:username, :password)
+        params.require(:user).permit(:username)
+    end
+
+    def set_model_config
+        @model_config=Rails.configuration.model_config['user']
+        @columnsData=User.attribute_names.select do |item|
+            !@model_config[item].nil? && @model_config[item]["visiable"]
+        end
     end
 end

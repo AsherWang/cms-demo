@@ -4,10 +4,10 @@ production:
 development:
     id:
         visiable: true
-    title:
+    username:
         visiable: true
         orderable: true
-    content:
+    email:
         visiable: true
     created_at:
         visiable: true

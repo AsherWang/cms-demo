@@ -4,9 +4,6 @@ production:
 development:
     id:
         visiable: true
-    title:
-        visiable: true
-        orderable: true
     created_at:
         visiable: true
         orderable: true
