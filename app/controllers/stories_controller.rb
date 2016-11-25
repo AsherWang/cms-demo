@@ -77,7 +77,6 @@ class StoriesController < ApplicationController
         search_list=Story.attribute_names.select do |item|
             !@model_config[item].nil? && @model_config[item]["searchable"]
         end
-        p search_list
         @filteredStories=Story.all
         @filteredStories=@filteredStories.order("#{columns[order["column"]]["data"]} #{order["dir"]}")  #单项排序
         @stories=@filteredStories.offset(params[:start]).limit(params[:length])

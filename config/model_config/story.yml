@@ -6,13 +6,12 @@ development:
         visiable: true
     title:
         visiable: true
-        orderable: true
-        searchable: true
+    content:
+        visiable: true
     created_at:
         visiable: true
         orderable: true
         formatter: "date"
-        searchable: true
     updated_at:
         visiable: true
         orderable: true
