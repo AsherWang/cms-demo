@@ -7,8 +7,8 @@ development:
     created_at:
         visiable: true
         orderable: true
-        formatter: "date"
+        render: "date"
     updated_at:
         visiable: true
         orderable: true
-        formatter: "date"
+        render: "date"
