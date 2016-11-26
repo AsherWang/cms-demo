@@ -47,6 +47,7 @@ class StoriesController < ApplicationController
 
     # PATCH/PUT /stories/1
     def update
+        authorize @story
         if @story.update(story_params)
             redirect_to @story, notice: 'Story was successfully updated.'
         else

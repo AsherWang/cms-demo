@@ -20,7 +20,7 @@ gem 'jquery-rails'
 # gem 'turbolinks'
 
 gem "devise"
-
+gem "pundit"
 
 # 暂时没用
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -41,7 +41,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Unicorn as the app server
 # gem 'unicorn'
 
-# Use Capistrano for deployment
+# Use Capistrano for deploymentK
 # gem 'capistrano-rails', group: :development
 
 group :development, :test do
