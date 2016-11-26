@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Myapp</title>
+    <%= yield :head %>
+    <title>CMS-DEMO</title>
     <link rel="stylesheet" href="/assets/stylesheets/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/stylesheets/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/stylesheets/metisMenu.css">
@@ -15,17 +16,10 @@
     <script src="/assets/javascripts/dataTables.bootstrap.js"></script>
     <script src="/assets/javascripts/metisMenu.js"></script>
     <script src="/assets/javascripts/sb-admin-2.js"></script>
-
-
-
     <%= csrf_meta_tags %>
 </head>
-
 <body>
-
 <div id="wrapper">
-
-    <!-- Navigation -->
     <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -34,7 +28,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">CMS DEMO</a>
+            <a class="navbar-brand" href="/">CMS DEMO</a>
         </div>
         <!-- /.navbar-header -->
 
@@ -45,13 +39,31 @@
                     <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i>个人信息</a>
-                    </li>
-                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> 设置</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li><a href="#"><i class="fa fa-sign-out fa-fw"></i>登出</a>
-                    </li>
+                    <% unless current_user.nil? %>
+                        <li>
+                            <%= link_to url_for(current_user) do %>
+                                <i class="fa fa-user fa-fw"></i>
+                                个人信息
+                            <% end %>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-gear fa-fw"></i> 设置</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <%= link_to destroy_user_session_url, method: "DELETE" do %>
+                                <i class="fa fa-sign-out fa-fw"></i>
+                                登出
+                            <% end %>
+                        </li>
+                    <%else%>
+                        <li>
+                            <%= link_to new_user_session_url, method: "GET" do %>
+                                <i class="fa fa-sign-out fa-fw"></i>
+                                登陆
+                            <% end %>
+                        </li>
+                    <% end %>
                 </ul>
                 <!-- /.dropdown-user -->
             </li>
@@ -66,23 +78,9 @@
                         <a href="/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#">Flot Charts</a>
-                            </li>
-                            <li>
-                                <a href="#">Morris.js Charts</a>
-                            </li>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-                    <li>
                         <a href="/products"><i class="fa fa-table fa-fw"></i> Tables</a>
                     </li>
-                    <li>
-                        <a href="#"><i class="fa fa-edit fa-fw"></i> Forms</a>
-                    </li>
+
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -126,51 +124,34 @@
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
-                    <li>
-                        <a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#">Blank Page</a>
-                            </li>
-                            <li>
-                                <a href="#">Login Page</a>
-                            </li>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
                 </ul>
             </div>
             <!-- /.sidebar-collapse -->
         </div>
         <!-- /.navbar-static-side -->
     </nav>
-
     <div id="page-wrapper">
+        <%==alert_helper(notice,"info")%>
+        <%==alert_helper(alert,"danger")%>
         <%= yield %>
     </div>
-    <!-- /#page-wrapper -->
-
 </div>
-<!-- /#wrapper -->
-
-<!--&lt;!&ndash; jQuery &ndash;&gt;-->
-<!--<script src="../vendor/jquery/jquery.min.js"></script>-->
-
-<!--&lt;!&ndash; Bootstrap Core JavaScript &ndash;&gt;-->
-<!--<script src="../vendor/bootstrap/js/bootstrap.min.js"></script>-->
-
-<!--&lt;!&ndash; Metis Menu Plugin JavaScript &ndash;&gt;-->
-
-
-<!--&lt;!&ndash; Morris Charts JavaScript &ndash;&gt;-->
-<!--<script src="../vendor/raphael/raphael.min.js"></script>-->
-<!--<script src="../vendor/morrisjs/morris.min.js"></script>-->
-<!--<script src="../data/morris-data.js"></script>-->
-
-<!-- Custom Theme JavaScript -->
-<!--<script src="../dist/js/sb-admin-2.js"></script>-->
-
+<div class="modal" id="comfirmDialog" tabindex="-1" role="dialog" aria-labelledby="comfirmDialogLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="comfirmDialogLabel">Modal title</h4>
+            </div>
+            <div class="modal-body" id="comfirmDialogContent">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="comfirmDialogCancelBtn">取消</button>
+                <button type="button" class="btn btn-primary" id="comfirmDialogConfirmBtn">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
-
-
 </html>

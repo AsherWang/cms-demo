@@ -1,0 +1,8 @@
+Description:
+    生成某个model的字段配置,配合dataTables管理一些字段的显示与否,参与搜索与否balabalabala
+
+Example:
+    rails generate model_config Thing
+
+    This will create:
+        what/will/it/create

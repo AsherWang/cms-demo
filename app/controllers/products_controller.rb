@@ -1,24 +1,24 @@
 class ProductsController < ApplicationController
-    before_action :set_product, only: [:show, :edit, :update, :destroy]
+    before_action :set_model_config, only:[:index,:index_ajax]
+    before_action :set_product, only: [:show, :edit, :update]
     before_action :set_products, only: [:index_ajax]
+    
     # GET /products
     def index
-        @products = Product.all
-    end
-
-    # GET /products/index/ajax
-    def index_ajax
         @products = Product.all
     end
 
 
     # GET Index /products
     def index_ajax
-
-        render json: {
-            total: Product.all.all.size,
+         render json: {
+            draw:params[:draw].to_i,
+            recordsTotal: Product.all.size,
+            recordsFiltered: @filteredProducts.size,
             data: @products.map{|item|item.attributes}  #todo:需要进行数据的过滤和格式化
         }
+
+
     end
 
     # GET /products/1
@@ -55,9 +55,11 @@ class ProductsController < ApplicationController
     end
 
     # DELETE /products/1
+    # DELETE
     def destroy
-        @product.destroy
-        redirect_to products_url, notice: 'Product was successfully destroyed.'
+        Product.destroy_all(:id=>params[:ids])
+       
+        render :json=>nil,:status=>204
     end
 
     private
@@ -67,15 +69,28 @@ class ProductsController < ApplicationController
     end
 
     #set items for query
+    #
     def set_products
-        @products = Product.all
-        offset= !params[:offset].nil? ? params[:offset] : 0
-        limit= !params[:limit].nil? ? params[:limit] : 200
-        @products=Product.all.offset(offset).limit(limit)
+        
+        columns=params[:columns]
+        order=params[:order]["0"]
+        search_list=Product.attribute_names.select do |item|
+            !@model_config[item].nil? && @model_config[item]["searchable"]
+        end
+        @filteredProducts=Product.all
+        @filteredProducts=@filteredProducts.order("#{columns[order["column"]]["data"]} #{order["dir"]}")  #单项排序
+        @products=@filteredProducts.offset(params[:start]).limit(params[:length])
     end
 
     # Only allow a trusted parameter "white list" through.
     def product_params
         params.require(:product).permit(:title, :content)
+    end
+
+    def set_model_config
+        @model_config=Rails.configuration.model_config['product']
+        @columnsData=Product.attribute_names.select do |item|
+            !@model_config[item].nil? && @model_config[item]["visiable"]
+        end
     end
 end

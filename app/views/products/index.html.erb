@@ -1,42 +1,17 @@
-
-<table style="display:none;">
-  <thead>
-    <tr>
-
-<!--遍历table的属性,并不包括created_at和updated_at-->
-      <th>Title</th>
-      <th>Content</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-  <!--这张表(singular_table_name)的单数名称-->
-    <% @products.each do |product| %>
-      <tr>
-        <td><%= product.title %></td>
-        <td><%= product.content %></td>
-        <td><%= link_to 'Show', product %></td>
-        <td><%= link_to 'Edit', edit_product_path(product) %></td>
-        <td><%= link_to 'Destroy', product, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
+<% content_for :head do%>
+    <title>Product列表</title>
+<% end%>
 <!--datatables-->
 <div class="row">
     <div class="col-lg-12">
-        <%if notice %>
-            <p id="notice" class="alert alert-info" style="margin: 10px 0 0 0;"><%= notice %></p>
-        <%end%>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <!--这张表(plural_table_name)的复数名称的标题化(内部单词首字母大写)-->
-                Products列表
+                Product列表
                 <%= link_to '新建 Product', new_product_path,style:"float:right;color:white;margin-top: -2px;line-height:1;",class:'btn btn-sm btn-success' %>
             </div>
             <div class="panel-body">
+                <button id="mutipleDeleteBtn" class="btn btn-danger btn-group-sm" style="margin-bottom: 10px;">删除已标记项目</button>
                 <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
                 </table>
             </div>
@@ -46,35 +21,40 @@
 
 <!--初始化dataTables-->
 <script>
-    $(document).ready(function () {
 
-        data = $.extend($.dataTableDefaultConfiguration, {
-            "ajax": {
-                "url": "<%= products_index_ajax_path%>",
-                "type": "GET",
-                "dataSrc": "data"
-            },
+    
+    $(document).ready(function () {
+        //todo:仿照rails的伪造方法来发起delete request,以及此处没有重写delete 的路由而随便传入了id,当然controller需要配合做出相应改动
+        var urls={
+            query:'<%= products_path%>/index_ajax',
+            delete:'<%= products_path%>/2333'
+        };
+        var data ={
             "columns": [  //todo:根据model里边的字段来设置columns,然后需要加上一些批量操作以及跳转链接
-                {"title": "id", "data": "id"}
-                                ,{"title": "title", "data": "title"}
-                                ,{"title": "content", "data": "content"}
-                                ,{"title": "created_at", "data": "created_at"}
-                ,{"title": "updated_at", "data": "updated_at"}
-                ,{"title":"operations","data":"id",render:function(id){
+                {"title":"<input type='checkbox' id='dataTableSelectAll' />","className":"dataTableSelection","orderable":false,"searchable":false,"data":"id",render:function(id){
+                    return "<input type='checkbox' class='itemSelector' name='item' item-id='"+id+"' />";
+                }}
+                <%@columnsData.each do |item|%>
+                ,{  "title": "<%=item%>"
+                    ,"data": "<%=item%>"
+                    
+                        ,"orderable":<%=!@model_config[item].nil? && !@model_config[item]["orderable"].nil? && @model_config[item]["orderable"]%>
+                    
+                        ,"searchable":<%=!@model_config[item].nil? && !@model_config[item]["searchable"].nil? && @model_config[item]["searchable"]%>
+                    
+                    ,"render":$.dataTablesFormatters('<%=!@model_config[item].nil? && @model_config[item]["formatter"]%>')
+                  }
+                <%end%>
+                ,{"title":"operations","orderable":false,"searchable":false,"data":"id",render:function(id){
                     linkHref='<%= products_path%>/'+id;
-                    look="<a class='btn btn-sm btn-default' href="+linkHref+" style='margin-right:7px;'>查看详情</a>";
+                    look="<a class='btn btn-sm btn-default' href='"+linkHref+"' style='margin-right:7px;'>详情</a>";
+                    edit="<a class='btn btn-sm btn-default' href='"+linkHref+"/edit' style='margin-right:7px;'>编辑</a>";
                     del="<a data-confirm='确定删除?' rel='nofollow' data-method='delete' href="+linkHref+" class='btn btn-danger btn-sm'>删除</a>";
-                    return look+del;
+                    return look+edit+del;
                 }}
             ]
-        });
-
-
-        $('#dataTables-example').DataTable(data);
-// 全部加载会不会有点多,目前默认返回前50个,
-// 这里需要一个异步加载策略..么.
-// 还需要应付搜索(datatable预设的是本地搜索)
-
+        };
+        $.MM_dataTable("#dataTables-example",data,urls);
     });
 </script>
 <br>

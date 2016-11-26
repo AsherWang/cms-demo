@@ -12,14 +12,16 @@
 </div>
 <% end %>
 
-    <div class="field">
-                    <%= f.label :title %><br>
-            <%= f.text_field :title %>
+    <div class="form-group">
+                    <%= f.label :title %>
+            <%= f.text_field :title,class:"form-control" %>
                 </div>
-    <div class="field">
-                    <%= f.label :content %><br>
-            <%= f.text_area :content %>
+    <div class="form-group">
+                    <%= f.label :content %>
+            <%= f.text_area :content,class:"form-control" %>
                 </div>
+
+
 <div class="actions">
     <!--<%= f.submit class:"btn btn-success btn-sm" %>-->
     <input type="submit" name="submit" value="提交" class="btn btn-success btn-sm">

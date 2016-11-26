@@ -1,0 +1,18 @@
+production:
+    id:
+        visiable: false
+development:
+    id:
+        visiable: true
+    title:
+        visiable: true
+    content:
+        visiable: true
+    created_at:
+        visiable: true
+        orderable: true
+        formatter: "date"
+    updated_at:
+        visiable: true
+        orderable: true
+        formatter: "date"
