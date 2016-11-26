@@ -3,58 +3,31 @@
 <% end%>
 <!--datatables-->
 <div class="row">
-    <div class="col-lg-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+    <div class="col-lg-12 col-md-12 col-xs-12 col-ms-12">
+        <div class="x_panel">
+            <div class="x_title">
                 <!--这张表(plural_table_name)的复数名称的标题化(内部单词首字母大写)-->
                 Product列表
                 <%= link_to '新建 Product', new_product_path,style:"float:right;color:white;margin-top: -2px;line-height:1;",class:'btn btn-sm btn-success' %>
             </div>
-            <div class="panel-body">
-                <button id="mutipleDeleteBtn" class="btn btn-danger btn-group-sm" style="margin-bottom: 10px;">删除已标记项目</button>
-                <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-                </table>
+            <div class="x_content">
+                <button id="productMutipleDeleteBtn" class="btn btn-danger btn-group-sm" style="margin-bottom: 10px;">删除已标记项目</button>
+                <table width="100%" class="table table-striped table-bordered table-hover" id="productDataTables"></table>
+                <DataTablesConfig
+                id="productDataTablesConfig"
+                description="这里保存着column的一些配置"
+                data-base-url="<%=products_path%>"
+                data-model="product"
+                data-column-config='<%=@columnConfig%>'>
+                </DataTablesConfig>
             </div>
         </div>
     </div>
 </div>
-
 <!--初始化dataTables-->
 <script>
-
-    
     $(document).ready(function () {
-        //todo:仿照rails的伪造方法来发起delete request,以及此处没有重写delete 的路由而随便传入了id,当然controller需要配合做出相应改动
-        var urls={
-            query:'<%= products_path%>/index_ajax',
-            delete:'<%= products_path%>/2333'
-        };
-        var data ={
-            "columns": [  //todo:根据model里边的字段来设置columns,然后需要加上一些批量操作以及跳转链接
-                {"title":"<input type='checkbox' id='dataTableSelectAll' />","className":"dataTableSelection","orderable":false,"searchable":false,"data":"id",render:function(id){
-                    return "<input type='checkbox' class='itemSelector' name='item' item-id='"+id+"' />";
-                }}
-                <%@columnsData.each do |item|%>
-                ,{  "title": "<%=item%>"
-                    ,"data": "<%=item%>"
-                    
-                        ,"orderable":<%=!@model_config[item].nil? && !@model_config[item]["orderable"].nil? && @model_config[item]["orderable"]%>
-                    
-                        ,"searchable":<%=!@model_config[item].nil? && !@model_config[item]["searchable"].nil? && @model_config[item]["searchable"]%>
-                    
-                    ,"render":$.dataTablesFormatters('<%=!@model_config[item].nil? && @model_config[item]["formatter"]%>')
-                  }
-                <%end%>
-                ,{"title":"operations","orderable":false,"searchable":false,"data":"id",render:function(id){
-                    linkHref='<%= products_path%>/'+id;
-                    look="<a class='btn btn-sm btn-default' href='"+linkHref+"' style='margin-right:7px;'>详情</a>";
-                    edit="<a class='btn btn-sm btn-default' href='"+linkHref+"/edit' style='margin-right:7px;'>编辑</a>";
-                    del="<a data-confirm='确定删除?' rel='nofollow' data-method='delete' href="+linkHref+" class='btn btn-danger btn-sm'>删除</a>";
-                    return look+edit+del;
-                }}
-            ]
-        };
-        $.MM_dataTable("#dataTables-example",data,urls);
+        $.MM_dataTable("product");
     });
 </script>
 <br>

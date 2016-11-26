@@ -1,24 +1,89 @@
-<%==panel_helper "登陆" do%>
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name),html:{role:"form",style:"width:300px;"}) do |f| %>
-        <div class="form-group">
-            <%= f.label :email %>
-            <%= f.email_field :email, autofocus: true,class:"form-control" %>
-        </div>
-        <div class="form-group">
-            <%= f.label :password %>
-            <%= f.password_field :password, autocomplete: "off",class:"form-control" %>
-        </div>
-        <% if devise_mapping.rememberable? -%>
-            <div class="form-group">
-                <%= f.check_box :remember_me %>
-                <%= f.label :remember_me %>
-            </div>
-        <% end -%>
-        <div class="actions">
-            <%= f.submit "登陆",class:"btn btn-default btn-sm" %>
-        </div>
-    <% end %>
-    <br>
-    <%= render "devise/shared/links" %>
+<%content_for :head do%>
+    <title>忘记密码</title>
 <%end%>
+<a class="hiddenanchor" id="signup"></a>
+<a class="hiddenanchor" id="signin"></a>
+
+<div class="login_wrapper">
+    <div class="animate form login_form">
+        <section class="login_content">
+            <%= form_for(resource, as: resource_name, url: session_path(resource_name),html:{role:"form"}) do |f| %>
+                <h1>CMS  登陆</h1>
+                <div>
+                    <%= f.email_field :email, autofocus: true,class:"form-control",placeholder:"Username / Email",required:"" %>
+                </div>
+                <div>
+                    <%= f.password_field :password, autocomplete: "off",class:"form-control" %>
+                </div>
+                <% if devise_mapping.rememberable? -%>
+                    <div class="form-group" style="display:none;">
+                        <%= f.check_box :remember_me %>
+                        <%= f.label :remember_me %>
+                    </div>
+                <% end -%>
+                <div class="actions">
+                    <%= f.submit "登陆",class:"btn btn-default submit",style:"margin-left:0;" %>
+                    <% if devise_mapping.recoverable? -%>
+                        <%=link_to "忘记密码?",new_admin_password_path,class:"reset_pass",style:"margin-right:0;" %>
+                    <%end%>
+                </div>
+                <div class="clearfix"></div>
+
+                <div class="separator">
+                    <% if devise_mapping.registerable? -%>
+                        <p class="change_link">New to site?
+                            <a href="#signup" class="to_register"> Create Account </a>
+                        </p>
+
+                        <div class="clearfix"></div>
+                    <%end%>
+                    <br />
+
+                    <div>
+                        <h1><i class="fa fa-paper-plane"></i> CMS</h1>
+                        <p>Copyright © 2016 Next Entertainment (Hong Kong) Limited</p>
+                    </div>
+                </div>
+            <% end %>
+            
+        </section>
+    </div>
+
+    <!--注册框-->
+    <!--<div id="register" class="animate form registration_form">-->
+        <!--<section class="login_content">-->
+            <!--<form>-->
+                <!--<h1>Create Account</h1>-->
+                <!--<div>-->
+                    <!--<input type="text" class="form-control" placeholder="Username" required="" />-->
+                <!--</div>-->
+                <!--<div>-->
+                    <!--<input type="email" class="form-control" placeholder="Email" required="" />-->
+                <!--</div>-->
+                <!--<div>-->
+                    <!--<input type="password" class="form-control" placeholder="Password" required="" />-->
+                <!--</div>-->
+                <!--<div>-->
+                    <!--<a class="btn btn-default submit" href="index.html">Submit</a>-->
+                <!--</div>-->
+
+                <!--<div class="clearfix"></div>-->
+
+                <!--<div class="separator">-->
+                    <!--<p class="change_link">Already a member ?-->
+                        <!--<a href="#signin" class="to_register"> Log in </a>-->
+                    <!--</p>-->
+
+                    <!--<div class="clearfix"></div>-->
+                    <!--<br />-->
+
+                    <!--<div>-->
+                        <!--<h1><i class="fa fa-paw"></i> Gentelella Alela!</h1>-->
+                        <!--<p>©2016 All Rights Reserved. Gentelella Alela! is a Bootstrap 3 template. Privacy and Terms</p>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</form>-->
+        <!--</section>-->
+    <!--</div>-->
+</div>
 

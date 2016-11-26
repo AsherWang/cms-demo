@@ -17,7 +17,31 @@
         }
     };
     
-    $.MM_dataTable=function(selector,dataTablesOptions,urls){
+    $.MM_dataTable=function(name,dataTablesOptions){
+        //todo:先移进来,回去再重构这里好了
+        var selector="#"+name+"DataTables";
+        var config=$("#"+name+"DataTablesConfig");
+        var baseUrl=config.data("base-url");
+        var urls={
+            query:baseUrl+'.json',
+            delete:baseUrl+'/2333'
+        };
+        var columns=[];
+        columns.push({"title":"<input type='checkbox' class='dataTableSelectAll' />","className":"dataTableSelection","orderable":false,"searchable":false,"data":"id",render:function(id){
+            return "<input type='checkbox' class='itemSelector' name='item' item-id='"+id+"' />";
+        }});
+
+        config.data("column-config").forEach(function(item){
+            item.render=$.dataTablesFormatters(item.render);
+            columns.push(item);  //item的render这里有问题
+        });
+        columns.push({"title":"operations","orderable":false,"searchable":false,"data":"id",render:function(id){
+            linkHref=+baseUrl+'/'+id;
+            look="<a class='btn btn-sm btn-default' href='"+linkHref+"' style='margin-right:7px;'>详情</a>";
+            edit="<a class='btn btn-sm btn-default' href='"+linkHref+"/edit' style='margin-right:7px;'>编辑</a>";
+            del="<a data-confirm='确定删除?' rel='nofollow' data-method='delete' href="+linkHref+" class='btn btn-danger btn-sm'>删除</a>";
+            return look+edit+del;
+        }});
         var csrfToken=$("meta[name='csrf-token']").attr("content");  //构造请求的时候需要用
         var data=$.extend($.dataTableDefaultConfiguration,{
             "ajax": {
@@ -26,15 +50,16 @@
                 "dataSrc": "data"
             },
             "processing": true,
-            "serverSide": true
-        },dataTablesOptions);  //databales的配置文件
+            "serverSide": true,
+            "columns":columns
+        });  //databales的配置文件
         var table=$(selector);
         
         //初始化
         var dataTableObject=table.DataTable(data);
         
         //绑定事件
-        table.find("#dataTableSelectAll").click(function(){
+        table.find(".dataTableSelectAll").click(function(){
             var flag=this.checked;
             $(selector+" .itemSelector").each(function(){this.checked=flag;});
         });
@@ -61,9 +86,7 @@
                 }
             }
         };
-        
-        
-        $("#mutipleDeleteBtn").click(function(){
+        $("#"+config.data("model")+"MutipleDeleteBtn").click(function(){
             //show alert
             var ids=gatherSelectedItemId();
             if(ids.length<1){

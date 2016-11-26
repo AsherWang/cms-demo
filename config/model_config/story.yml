@@ -4,15 +4,18 @@ production:
 development:
     id:
         visiable: true
+        searchable: true
     title:
         visiable: true
-    content:
+        searchable: true
+    title:
         visiable: true
+        searchable: true    
     created_at:
         visiable: true
         orderable: true
-        formatter: "date"
+        render: "date"
     updated_at:
         visiable: true
         orderable: true
-        formatter: "date"
+        render: "date"

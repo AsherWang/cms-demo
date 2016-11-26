@@ -1,16 +1,34 @@
-<%==panel_helper "忘记密码?" do%>
-    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { role:"form",method: :post }) do |f| %>
-        <%= devise_error_messages! %>
-
-        <div class="form-group">
-            <%= f.label :email %><br />
-            <%= f.email_field :email, autofocus: true,class:"form-input" %>
-        </div>
-        <br>
-        <div class="actions">
-            <%= f.submit "Send me reset password instructions" %>
-        </div>
-    <% end %>
-    <br>
-    <%= render "devise/shared/links" %>
+<%content_for :head do%>
+    <title>忘记密码</title>
 <%end%>
+<a class="hiddenanchor" id="signup"></a>
+<a class="hiddenanchor" id="signin"></a>
+<div class="login_wrapper">
+    <div class="animate form login_form">
+        <section class="login_content" >
+            <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { role:"form",method: :post }) do |f| %>
+                <%= devise_error_messages! %>
+                <h1>忘记密码</h1>
+                <div>
+                    <%= f.email_field :email, autofocus: true,class:"form-control",placeHolder:"Email" %>
+                </div>
+                <%= f.submit "发送密码重置链接",class:"btn btn-default btn-sm",style:"margin-left:0;",disabled:"" %>
+                <%=link_to "登陆",new_admin_session_path,class:"reset_pass",style:"float: right;" %>
+                <br><br>
+                <div class="separator">
+                    <!--<p class="change_link">New to site?-->
+                        <!--<a href="#signup" class="to_register"> Create Account </a>-->
+                    <!--</p>-->
+
+                    <!--<div class="clearfix"></div>-->
+                    <!--<br />-->
+
+                    <div>
+                        <h1><i class="fa fa-paper-plane"></i> CMS</h1>
+                        <p>Copyright © 2016 Next Entertainment (Hong Kong) Limited</p>
+                    </div>
+                </div>
+            <% end %>
+        </section>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 class StoriesController < ApplicationController
+    before_action :check_permission
     before_action :set_model_config, only:[:index,:index_ajax]
     before_action :set_story, only: [:show, :edit, :update]
     before_action :set_stories, only: [:index_ajax]
@@ -47,7 +48,6 @@ class StoriesController < ApplicationController
 
     # PATCH/PUT /stories/1
     def update
-        authorize @story
         if @story.update(story_params)
             redirect_to @story, notice: 'Story was successfully updated.'
         else
@@ -72,14 +72,26 @@ class StoriesController < ApplicationController
     #set items for query
     #
     def set_stories
-        
+        p params
         columns=params[:columns]
         order=params[:order]["0"]
+        search_value=params[:search][:value] #搜索框里的值
+    
+        # 允许搜索的项目,配置项在config/model_config/story.yml
         search_list=Story.attribute_names.select do |item|
             !@model_config[item].nil? && @model_config[item]["searchable"]
         end
         @filteredStories=Story.all
-        @filteredStories=@filteredStories.order("#{columns[order["column"]]["data"]} #{order["dir"]}")  #单项排序
+    
+        #如果有搜索项并且搜索框里有值,就进行字符串匹配
+        if !search_list.empty? && !search_value.nil? && search_value.length > 0 
+            @filteredStories=Story.where(search_list.join(" like '%#{search_value}%' or ")+" like '%#{search_value}%'")
+        end
+    
+        #排序
+        @filteredStories=@filteredStories.order("#{columns[order["column"]]["data"]} #{order["dir"]}")  
+        
+        #分页
         @stories=@filteredStories.offset(params[:start]).limit(params[:length])
     end
 
@@ -93,5 +105,13 @@ class StoriesController < ApplicationController
         @columnsData=Story.attribute_names.select do |item|
             !@model_config[item].nil? && @model_config[item]["visiable"]
         end
+    end
+    
+    def check_permission
+        p 'permission text'
+        p params["controller"]+"_"+params["action"]
+        # unless current_admin.permissions.include?(params["controller"]+"_"+params["action"])
+        #     raise "没权限啦"
+        # end
     end
 end
