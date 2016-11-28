@@ -4,13 +4,11 @@ production:
 development:
     id:
         visiable: true
-        searchable: true
     title:
         visiable: true
-        searchable: true
-    title:
+    content:
         visiable: true
-        searchable: true    
+        searchable: true
     created_at:
         visiable: true
         orderable: true

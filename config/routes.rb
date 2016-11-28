@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
-  resources :roles
-  resources :permissions
-  devise_for :admins
-  resources :admins
+    
   resources :stories
-  resources :products
+  devise_for :admins
+  resources :permissions
+  resources :roles
+  resources :admins
   root 'index#index'
 
 end

@@ -30,7 +30,7 @@ module Myapp
         # 给他替换了orz
         config.generators do |g|
             g.stylesheets false
-            g.javascripts false
+            g.javascripts :custom_coffee
             g.helper :model_config
             g.jbuilder :custom_jbuilder
         end

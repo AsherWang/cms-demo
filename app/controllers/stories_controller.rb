@@ -1,25 +1,18 @@
 class StoriesController < ApplicationController
-    before_action :check_permission
-    before_action :set_model_config, only:[:index,:index_ajax]
     before_action :set_story, only: [:show, :edit, :update]
-    before_action :set_stories, only: [:index_ajax]
+    before_action :set_stories, only: [:index]
     
     # GET /stories
     def index
-        @stories = Story.all
-    end
-
-
-    # GET Index /stories
-    def index_ajax
-         render json: {
-            draw:params[:draw].to_i,
-            recordsTotal: Story.all.size,
-            recordsFiltered: @filteredStories.size,
-            data: @stories.map{|item|item.attributes}  #todo:需要进行数据的过滤和格式化
-        }
-
-
+        @columnConfig=@columnsData.map {|item|
+            {  :title=>item,
+               :data=> item,
+               :visiable=>model_config_enable?(item,"visiable"),
+               :orderable=>model_config_enable?(item,"orderable"),
+               :searchable=>model_config_enable?(item,"searchable"),
+               :render=>model_config_enable?(item,"render")
+            }
+        }.to_json
     end
 
     # GET /stories/1
@@ -72,27 +65,36 @@ class StoriesController < ApplicationController
     #set items for query
     #
     def set_stories
-        p params
-        columns=params[:columns]
-        order=params[:order]["0"]
-        search_value=params[:search][:value] #搜索框里的值
-    
-        # 允许搜索的项目,配置项在config/model_config/story.yml
-        search_list=Story.attribute_names.select do |item|
-            !@model_config[item].nil? && @model_config[item]["searchable"]
-        end
-        @filteredStories=Story.all
-    
-        #如果有搜索项并且搜索框里有值,就进行字符串匹配
-        if !search_list.empty? && !search_value.nil? && search_value.length > 0 
-            @filteredStories=Story.where(search_list.join(" like '%#{search_value}%' or ")+" like '%#{search_value}%'")
-        end
-    
-        #排序
-        @filteredStories=@filteredStories.order("#{columns[order["column"]]["data"]} #{order["dir"]}")  
+        # 从配置中拿到model有关dataTable的某些配置
+        # 貌似比较好的方式是取到一次@columnsData就把它缓存起来?
+        @model_config=Rails.configuration.model_config['story']
+        @columnsData=Story.attribute_names.select do |item|
+            !@model_config[item].nil? && @model_config[item]["visiable"]
+        end  
+        if request.format.to_sym == :json
+            # 解析dataTable传上来的参数
+            columns=params[:columns]
+            order=params[:order]["0"]
+            search_value=params[:search][:value] #搜索框里的值
         
-        #分页
-        @stories=@filteredStories.offset(params[:start]).limit(params[:length])
+            # 允许搜索的项目,配置项在config/model_config/story.yml
+            # search_list也换存起来?
+            search_list=Story.attribute_names.select do |item|
+                !@model_config[item].nil? && @model_config[item]["searchable"]
+            end
+            @filteredStories=Story.all
+        
+            #如果有搜索项并且搜索框里有值,就进行字符串匹配
+            if !search_list.empty? && !search_value.nil? && search_value.length > 0 
+                @filteredStories=Story.where(search_list.join(" like '%#{search_value}%' or ")+" like '%#{search_value}%'")
+            end
+        
+            #排序
+            @filteredStories=@filteredStories.order("#{columns[order["column"]]["data"]} #{order["dir"]}")  
+            
+            #分页
+            @stories=@filteredStories.offset(params[:start]).limit(params[:length])
+        end
     end
 
     # Only allow a trusted parameter "white list" through.
@@ -100,18 +102,7 @@ class StoriesController < ApplicationController
         params.require(:story).permit(:title, :content)
     end
 
-    def set_model_config
-        @model_config=Rails.configuration.model_config['story']
-        @columnsData=Story.attribute_names.select do |item|
-            !@model_config[item].nil? && @model_config[item]["visiable"]
-        end
-    end
-    
-    def check_permission
-        p 'permission text'
-        p params["controller"]+"_"+params["action"]
-        # unless current_admin.permissions.include?(params["controller"]+"_"+params["action"])
-        #     raise "没权限啦"
-        # end
+    def model_config_enable?(attribute,name)
+        @model_config[attribute].nil? ? false : (false || @model_config[attribute][name])
     end
 end

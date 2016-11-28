@@ -36,7 +36,7 @@
             columns.push(item);  //item的render这里有问题
         });
         columns.push({"title":"operations","orderable":false,"searchable":false,"data":"id",render:function(id){
-            linkHref=+baseUrl+'/'+id;
+            linkHref=baseUrl+'/'+id;
             look="<a class='btn btn-sm btn-default' href='"+linkHref+"' style='margin-right:7px;'>详情</a>";
             edit="<a class='btn btn-sm btn-default' href='"+linkHref+"/edit' style='margin-right:7px;'>编辑</a>";
             del="<a data-confirm='确定删除?' rel='nofollow' data-method='delete' href="+linkHref+" class='btn btn-danger btn-sm'>删除</a>";
