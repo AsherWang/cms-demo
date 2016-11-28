@@ -1,0 +1,51 @@
+<!--为一个role或者admin编辑permissions-->
+<!--或者为一个admin编辑roles-->
+
+<!--相关变量 master,owned_collections,collections-->
+
+<!--最后给一个form好了,然后指向对应master的update action-->
+<!--构建表单是-->
+
+<!--enable:[permission_or_role_ids]-->
+<!--disable:[permission_or_role_ids]-->
+
+<%==panel_helper title do%>
+    <%= form_for(resource,html:{role:"form"}) do |f| %>
+        <input type="hidden" name="modifyitem" value="<%=checkbox_name%>">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <td style="width:100px;">状态</td>
+                    <td style="width:100px;">名称</td>
+                    <td>描述</td>
+                </tr>
+            </thead>
+            <tbody>
+                <%collections.each do |item| %>
+                    <tr>
+                        <td>
+                            <%if enabled_collections.include?(item)%>
+                                <input type="checkbox" name="<%=checkbox_name%>[]" checked value="<%=item.id%>" />
+                            <%else%>
+                                <input type="checkbox" name="<%=checkbox_name%>[]" value="<%=item.id%>"/>
+                            <%end%>
+                            
+                        </td>
+                        <td>
+                            <%=item.name%>
+                        </td>
+                        <td>
+                            <%=item.description%>
+                        </td>
+                        
+                    </tr>
+                <%end%>
+            </tbody>
+        </table>
+        <div class="actions">
+            <input type="submit" name="submit" value="提交修改" class="btn btn-success btn-sm">
+        </div>
+    <%end%>
+<%end%>
+
+

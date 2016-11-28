@@ -22,6 +22,7 @@
         var selector="#"+name+"DataTables";
         var config=$("#"+name+"DataTablesConfig");
         var baseUrl=config.data("base-url");
+        var searchEnabled=false;
         var urls={
             query:baseUrl+'.json',
             delete:baseUrl+'/2333'
@@ -33,6 +34,7 @@
 
         config.data("column-config").forEach(function(item){
             item.render=$.dataTablesFormatters(item.render);
+            if(item.searchable)searchEnabled=true;
             columns.push(item);  //item的render这里有问题
         });
         columns.push({"title":"operations","orderable":false,"searchable":false,"data":"id",render:function(id){
@@ -49,6 +51,7 @@
                 "type": "GET",
                 "dataSrc": "data"
             },
+            "searching":searchEnabled,
             "processing": true,
             "serverSide": true,
             "columns":columns

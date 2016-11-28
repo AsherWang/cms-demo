@@ -5,8 +5,11 @@
     <div class="col-lg-12 col-md-12 col-xs-12 col-ms-12">
         <div class="x_panel">
             <div class="x_title">
-                <%= singular_table_name.titleize %>列表
-                <%%= link_to '新建 <%= human_name %>', new_<%= singular_table_name %>_path,style:"float:right;color:white;margin-top: -2px;line-height:1;",class:'btn btn-sm btn-success' %>
+                <h2>
+                    <%= singular_table_name.titleize %>列表
+                </h2>
+                <%%= link_to '新建 <%= human_name %>', new_<%= singular_table_name %>_path,style:"float:right;color:white;",class:'btn btn-sm btn-success' %>
+                <div class="clearfix"></div>
             </div>
             <div class="x_content">
                 <button id="<%= singular_table_name %>MutipleDeleteBtn" class="btn btn-danger btn-group-sm" style="margin-bottom: 10px;">删除已标记项目</button>
